@@ -1,9 +1,10 @@
 #!/bin/bash
 
-echo "Basic Server Performance Stats"
-echo "-------------------------------"
+echo -e "Basic Server Performance Stats \n"
 
 # Get Memory Info
+
+echo "------------Memory------------"
 
 read totalMemory freeMemory < <(
   vmstat -sS M | awk '
@@ -18,5 +19,10 @@ percentFree=$(awk -v free="$freeMemory" -v total="$totalMemory" 'BEGIN {printf "
 percentUsed=$(awk -v used="$usedMemory" -v total="$totalMemory" 'BEGIN {printf "%.2f", used/total*100}')
 
 echo "Total memory: $totalMemory  MB "
-echo "Free memory: $freeMemory  MB - $percentFree % unused"
-echo "Used memory: $usedMemory MB - $percentUsed % used"
+echo "Free memory: $freeMemory  MB - $percentFree% unused"
+echo "Used memory: $usedMemory MB - $percentUsed% used"
+
+echo -e "\n"
+echo "------------CPU------------"
+cpuUsage=$(vmstat 1 2 | awk 'NR==4 { print 100 - $15 }')
+echo "CPU Usage: $cpuUsage%"
